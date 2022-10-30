@@ -6,6 +6,30 @@
 #edits by Saiban: 64-bit is default
 # Edits by Ben: Implemented getopt for command line
 
+#!/bin/bash
+function update(){
+	for file in ` ls ./`
+	do
+		if [ -d ./"/"$file ]
+		then
+			echo "cd $file"
+			cd $file
+			if [ $file != "prj_gerrit_int" ]
+			then
+				git reset --hard
+				git checkout prj_gerrit_int
+				git pull
+			else
+				sh update.sh
+			fi
+			cd ..
+		fi
+	done
+}
+
+update
+        
+
 if [ $# -lt 1 ]; then # if no option is selected the user guide is printed
         echo "Usage:"
         echo ""
