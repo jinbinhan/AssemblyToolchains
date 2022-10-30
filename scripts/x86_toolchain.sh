@@ -26,7 +26,7 @@ function update(){
 		fi
 	done
 }
-
+echo "gogo"
 update
         
 
