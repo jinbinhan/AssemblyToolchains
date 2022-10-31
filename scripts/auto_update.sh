@@ -2,7 +2,7 @@
 
 path=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 cd "$path"
-#check if v.txt exists or not than create it adn write 0
+#check if v.txt exists or not than create it and write 0
 if [ ! -f "v.txt" ]; then
     echo "0" >v.txt
 fi
