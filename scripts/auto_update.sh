@@ -14,7 +14,7 @@ new_version=$(git describe --tags $(git rev-list --tags --max-count=1)) #get new
 if [ "$local_version" != "$new_version" ]; then
     # echo "发现新版本:${new_version}"
     #ask user to update or not
-    read -p "当前版本为:${local_version} ,是否更新到最新版本:${new_version}?(y/n)" -n 1 -r
+    read -p "New version ${new_version} found,do you want to update?(y/n)" -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         git pull
         git checkout ${new_version}
