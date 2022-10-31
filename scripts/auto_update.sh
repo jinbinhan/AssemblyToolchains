@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Created by Jinbin Han
+# ISS Program, SADT, SAIT
+# August 2022
+
 path=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 cd "$path"
 #check if v.txt exists or not than create it and write 0

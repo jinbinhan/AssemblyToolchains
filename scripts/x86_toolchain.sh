@@ -5,6 +5,7 @@
 # August 2022
 #edits by Saiban: 64-bit is default
 # Edits by Ben: Implemented getopt for command line
+# Edits by Jinbin Han: Added update function
 
 source auto_update.sh #update script
 
