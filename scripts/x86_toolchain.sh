@@ -8,8 +8,6 @@
 
 source auto_update.sh
 
-echo "This script will install the 32-bit toolchain for the ISS program."
-
 if [ $# -lt 1 ]; then # if no option is selected the user guide is printed
         echo "Usage:"
         echo ""
