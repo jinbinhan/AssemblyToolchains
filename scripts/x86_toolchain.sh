@@ -6,29 +6,9 @@
 #edits by Saiban: 64-bit is default
 # Edits by Ben: Implemented getopt for command line
 
-#!/bin/bash
-function update(){
-	for file in ` ls ./`
-	do
-		if [ -d ./"/"$file ]
-		then
-			echo "cd $file"
-			cd $file
-			if [ $file != "prj_gerrit_int" ]
-			then
-				git reset --hard
-				git checkout prj_gerrit_int
-				git pull
-			else
-				sh update.sh
-			fi
-			cd ..
-		fi
-	done
-}
-echo "gogo"
-update
-        
+source auto_update.sh
+
+echo "This script will install the 32-bit toolchain for the ISS program."
 
 if [ $# -lt 1 ]; then # if no option is selected the user guide is printed
         echo "Usage:"
@@ -44,7 +24,7 @@ if [ $# -lt 1 ]; then # if no option is selected the user guide is printed
         echo "-o | --output <filename>      Output filename."
 
         exit 1 # after printing the guide the program will exit
-fi # closes the above if statement
+fi             # closes the above if statement
 
 # setting default parameters
 GDB=False
@@ -63,43 +43,43 @@ eval set -- "$options"
 
 # Loop through positional paramters.
 while [[ $# -gt 0 ]]; do # while statement is executed if user enters an argument
-        case $1 in # checking different cases below to find a match with the command entered by user 
-                -g|--gdb) # if -g is entered, then GDB is set to true 
-                        GDB=True
-                        shift # past argument
-                        ;;
-                -o|--output) # if -o is entered, then user will enter a file name or another argument
-                        OUTPUT_FILE="$2" # OUTPUT_FILE variable will store the file name entered
-                        shift # past argument
-                        shift # past value
-                        ;;
-                -v|--verbose) # if -v command is entered, then VERBOSE is set true
-                        VERBOSE=True
-                        shift # past argument
-                        ;;
-                -3|--x86-32) # Getopt only takes one char for short commands (-32 will still work).
-                        BITS=False
-                        shift # past argument
-                        ;;
-                -q|--qemu) # if -q is entered, then QEMU is set true
-                        QEMU=True
-                        shift # past argument
-                        ;;
-                -r|--run) # if -r is entered, then RUN is set true
-                        RUN=True
-                        shift # past argument
-                        ;;
-                -b|--break) # if -b is entered, then user will enter another argument to specify breakthrough point
-                        BREAK="$2" # breakthrough point will be saved in BREAK
-                        shift # past argument
-                        shift # past value
-                        ;;
-                --)            # Case '--' is always the last arg of getopt args.
-                        shift; # past argument 
-                        break  # exit the loop 
-                        ;;
+        case $1 in       # checking different cases below to find a match with the command entered by user
+        -g | --gdb)      # if -g is entered, then GDB is set to true
+                GDB=True
+                shift # past argument
+                ;;
+        -o | --output)           # if -o is entered, then user will enter a file name or another argument
+                OUTPUT_FILE="$2" # OUTPUT_FILE variable will store the file name entered
+                shift            # past argument
+                shift            # past value
+                ;;
+        -v | --verbose) # if -v command is entered, then VERBOSE is set true
+                VERBOSE=True
+                shift # past argument
+                ;;
+        -3 | --x86-32) # Getopt only takes one char for short commands (-32 will still work).
+                BITS=False
+                shift # past argument
+                ;;
+        -q | --qemu) # if -q is entered, then QEMU is set true
+                QEMU=True
+                shift # past argument
+                ;;
+        -r | --run) # if -r is entered, then RUN is set true
+                RUN=True
+                shift # past argument
+                ;;
+        -b | --break)      # if -b is entered, then user will enter another argument to specify breakthrough point
+                BREAK="$2" # breakthrough point will be saved in BREAK
+                shift      # past argument
+                shift      # past value
+                ;;
+        --)           # Case '--' is always the last arg of getopt args.
+                shift # past argument
+                break # exit the loop
+                ;;
         esac # ends the above case statement
-done # ends the while loop
+done         # ends the while loop
 
 # Use original args that were not modified by getopt.
 INPUT_FILE="$@"
@@ -109,7 +89,7 @@ if [[ ! -f $INPUT_FILE ]]; then # statement will be executed if the file entered
         exit 1 # program exited
 fi
 
-if [ "$OUTPUT_FILE" == "" ]; then # statement will be executed if user doesn't specify the name of the output file
+if [ "$OUTPUT_FILE" == "" ]; then    # statement will be executed if user doesn't specify the name of the output file
         OUTPUT_FILE=${INPUT_FILE%.*} # variable output file will be equal to the name of input file
 fi
 
@@ -122,7 +102,7 @@ if [ "$VERBOSE" == "True" ]; then # if the statement is true, then VERBOSE will 
         echo "  Input File = $INPUT_FILE"
         echo "  Output File = $OUTPUT_FILE"
         echo "  Verbose = $VERBOSE"
-        echo "  64 bit mode = $BITS" 
+        echo "  64 bit mode = $BITS"
         echo ""
 
         echo "NASM started..."
@@ -133,14 +113,15 @@ if [ "$BITS" == "True" ]; then # if BITS is true, then nasm will compile the fil
 
         nasm -fPIE elf64 $1 -o $OUTPUT_FILE.o && echo "" # object file is created
 
-
-elif [ "$BITS" == "False" ]; then # if BITS is false, then nasm will compile file in 32 bit mode
+elif
+        [ "$BITS" == "False" ]
+then # if BITS is false, then nasm will compile file in 32 bit mode
 
         nasm -fPIE elf $1 -o $OUTPUT_FILE.o && echo "" # object file is created
 
 fi
 
-if [ "$VERBOSE" == "True" ]; then 
+if [ "$VERBOSE" == "True" ]; then
 
         echo "NASM finished"
         echo "Linking with GCC ..."
@@ -151,13 +132,13 @@ if [ "$BITS" == "True" ]; then # if BITS is true, then gcc will compile the file
 
         gcc -m64 -nostdlib $OUTPUT_FILE.o -o $OUTPUT_FILE && echo "" # an executable file is created
 
-
-elif [ "$BITS" == "False" ]; then # if BITS is false, then gcc will compile the file in 32 bit mode
+elif
+        [ "$BITS" == "False" ]
+then # if BITS is false, then gcc will compile the file in 32 bit mode
 
         gcc -m32 -nostdlib $OUTPUT_FILE.o -o $OUTPUT_FILE && echo "" # an executable file is created
 
 fi
-
 
 if [ "$VERBOSE" == "True" ]; then
 
@@ -186,7 +167,7 @@ fi
 
 if [ "$GDB" == "True" ]; then # if the statement is true, the program will load in GDB
 
-        gdb_params=() # GDB parameters entered by user are stored here
+        gdb_params=()                  # GDB parameters entered by user are stored here
         gdb_params+=(-ex "b ${BREAK}") # breakthrough point is specified
 
         if [ "$RUN" == "True" ]; then # if statement is true, GDB will run the program
