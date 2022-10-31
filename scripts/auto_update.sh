@@ -3,6 +3,10 @@
 path=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 cd "$path"
 # echo "更新目录:${path}"
+#check if v.txt exists or not than create it adn write 0
+if [ ! -f "v.txt" ]; then
+    echo "0" >v.txt
+fi
 # get the local version from local file v.txt
 local_version=$(cat v.txt)
 new_version=$(git describe --tags $(git rev-list --tags --max-count=1)) #get newest version
