@@ -6,7 +6,7 @@
 #edits by Saiban: 64-bit is default
 # Edits by Ben: Implemented getopt for command line
 
-source auto_update.sh
+source auto_update.sh #update script
 
 if [ $# -lt 1 ]; then # if no option is selected the user guide is printed
         echo "Usage:"
